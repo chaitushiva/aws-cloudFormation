@@ -1,0 +1,62 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+  "Description" : "AWS CloudTrail API Activity Alarm Template for CloudWatch Logs",
+  "Parameters" : {
+      "Email" : {
+          "Type" : "String",
+          "Description" : "Email address to notify when the update function event occurs"
+      }
+  },
+  "Resources" : {
+	  "AlarmNotificationTopic": {
+          "Type": "AWS::SNS::Topic",
+          "Properties": {
+              "Subscription": [
+                  {
+                      "Endpoint": { "Ref": "Email" },
+                      "Protocol": "email"
+                  }
+              ]
+          }
+      },
+      "MySubscription" : {
+  "Type" : "AWS::SNS::Subscription",
+  "Properties" : {
+    "Endpoint" :"shivaldap@email.com",
+    "Protocol" : "email",
+    "TopicArn" : {"Ref" : "AlarmNotificationTopic"}
+  }
+},
+      "OpsEventRule": {
+  "Type": "AWS::Events::Rule",
+  "Properties": {
+    "Description": "EventRule",
+    "EventPattern": {
+  "source": [
+    "aws.lambda"
+  ],
+  "detail-type": [
+    "AWS API Call via CloudTrail"
+  ],
+  "detail": {
+    "eventSource": [
+      "lambda.amazonaws.com"
+    ],
+    "eventName": [
+      "Decrypt"
+    ]
+  }
+},
+    "State": "ENABLED",
+    "Targets": [
+      {
+        "Arn": { "Ref": "AlarmNotificationTopic" },
+        "Id": "OpsTopic"
+      }
+    ]
+  }
+}
+
+
+  }
+}
