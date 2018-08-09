@@ -16,3 +16,4 @@ def get_log_events(log_group):
 if __name__ == '__main__':
     for event in get_log_events('platform/loris'):
         print(event)
+*******https://alexwlchan.net/2017/11/fetching-cloudwatch-logs/
